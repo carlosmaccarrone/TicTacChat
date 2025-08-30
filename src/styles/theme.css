@@ -1,0 +1,7 @@
+body, #root {
+  background-color: #232C46;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  margin: 0;  
+}

@@ -1,0 +1,17 @@
+# Specify that .js and .jsx files are JavaScript for GitHub linguist
+*.jsx linguist-language=JavaScript
+*.js linguist-language=JavaScript
+
+# Handle line endings for JavaScript, CSS and HTML files
+*.js text eol=lf
+*.jsx text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+
+# Normalize line endings to LF for JSON files (like package.json)
+*.json text eol=lf
+
+# Treat JPG files as binary to avoid merge conflicts and line ending changes
+*.jpg binary
+*.png binary
+*.svg binary
