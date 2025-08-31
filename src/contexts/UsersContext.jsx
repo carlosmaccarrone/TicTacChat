@@ -8,12 +8,13 @@ export function UsersProvider({ children }) {
   const [nickname, setNickname] = useState(null);
   const [joined, setJoined] = useState(false);
   const [users, setUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
   const socketRef = useRef(null);
 
   const nicknameRef = useRef(nickname);
   const joinedRef = useRef(joined);
 
-  // Mantener refs sincronizadas
   const setNicknameSafe = (nick) => {
     nicknameRef.current = nick;
     setNickname(nick);
@@ -25,13 +26,14 @@ export function UsersProvider({ children }) {
 
   const connectSocket = (nick) => {
     setNicknameSafe(nick);
+    setLoadingUsers(true);
 
     if (!socketRef.current) {
       socketRef.current = io('http://localhost:3001', { autoConnect: false, reconnection: true });
 
       socketRef.current.on('updateUserList', (list) => {
-        // ahora usa las refs
-        if (joinedRef.current || nick === nicknameRef.current) setUsers(list);
+        setUsers(list);
+        setLoadingUsers(false); // <-- lista inicial recibida
       });
 
       socketRef.current.on('disconnect', () => setJoinedSafe(false));
@@ -66,6 +68,7 @@ export function UsersProvider({ children }) {
       setNicknameSafe(null);
       setUsers([]);
       setJoinedSafe(false);
+      setLoadingUsers(false);
       socketRef.current.disconnect();
       socketRef.current = null;
     });
@@ -73,7 +76,10 @@ export function UsersProvider({ children }) {
 
   return (
     <UsersContext.Provider value={{
-      users, nickname, joined,
+      users,
+      nickname,
+      joined,
+      loadingUsers,
       addUserToSocket: connectSocket,
       removeUserFromSocket: disconnectSocket,
     }}>

@@ -6,13 +6,13 @@ import { useUsers } from '@/contexts/UsersContext';
 /*import PopUp from '@/pages/ChatRoom/PopUp/PopUp';*/
 
 export default function ChatRoomPage() {
-  const { users, joined, connecting } = useUsers();
+  const { users, joined, loadingUsers } = useUsers();
 
   return (
     <div className={styles.container}>
       {/* User List */}
       <div className={styles.userList}>
-        <UserList users={users} loadingUsers={connecting} />
+        <UserList users={users} loadingUsers={loadingUsers} />
       </div>
 
       {/* Chat area */}
