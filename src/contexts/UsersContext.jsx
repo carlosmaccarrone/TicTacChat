@@ -1,4 +1,3 @@
-// UsersContext.jsx
 import { createContext, useContext, useState, useRef } from 'react';
 import { io } from 'socket.io-client';
 
@@ -6,21 +5,39 @@ export const UsersContext = createContext({});
 export const useUsers = () => useContext(UsersContext);
 
 export function UsersProvider({ children }) {
-  const [users, setUsers] = useState([]);
   const [nickname, setNickname] = useState(null);
   const [joined, setJoined] = useState(false);
+  const [users, setUsers] = useState([]);
   const socketRef = useRef(null);
 
-  const connectSocket = (nick) => {
-    setNickname(nick);
-    if (!socketRef.current) {
-      socketRef.current = io('http://localhost:3001', { autoConnect: false });
+  const nicknameRef = useRef(nickname);
+  const joinedRef = useRef(joined);
 
-      socketRef.current.on('updateUserList', setUsers);
-      socketRef.current.on('disconnect', () => setJoined(false));
+  // Mantener refs sincronizadas
+  const setNicknameSafe = (nick) => {
+    nicknameRef.current = nick;
+    setNickname(nick);
+  };
+  const setJoinedSafe = (val) => {
+    joinedRef.current = val;
+    setJoined(val);
+  };
+
+  const connectSocket = (nick) => {
+    setNicknameSafe(nick);
+
+    if (!socketRef.current) {
+      socketRef.current = io('http://localhost:3001', { autoConnect: false, reconnection: true });
+
+      socketRef.current.on('updateUserList', (list) => {
+        // ahora usa las refs
+        if (joinedRef.current || nick === nicknameRef.current) setUsers(list);
+      });
+
+      socketRef.current.on('disconnect', () => setJoinedSafe(false));
       socketRef.current.on('kicked', () => {
-        setNickname(null);
-        setJoined(false);
+        setNicknameSafe(null);
+        setJoinedSafe(false);
         socketRef.current.disconnect();
         socketRef.current = null;
       });
@@ -29,8 +46,8 @@ export function UsersProvider({ children }) {
     return new Promise((resolve) => {
       const joinRoom = () => {
         socketRef.current.emit('joinRoom', nick, (res) => {
-          setJoined(res.ok);
-          if (!res.ok) setNickname(null);
+          setJoinedSafe(res.ok);
+          if (!res.ok) setNicknameSafe(null);
           resolve(res);
         });
       };
@@ -44,11 +61,11 @@ export function UsersProvider({ children }) {
   };
 
   const disconnectSocket = () => {
-    if (!socketRef.current || !joined) return;
+    if (!socketRef.current || !joinedRef.current) return;
     socketRef.current.emit('leaveRoom', () => {
-      setNickname(null);
+      setNicknameSafe(null);
       setUsers([]);
-      setJoined(false);
+      setJoinedSafe(false);
       socketRef.current.disconnect();
       socketRef.current = null;
     });
