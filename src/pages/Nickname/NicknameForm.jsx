@@ -17,13 +17,16 @@ const NicknameForm = () => {
     }
   };
 
-  const handleSubmit = (evt) => {
+  const handleSubmit = async (evt) => {
     evt.preventDefault();
     if (nickname.length < 6) {
       setError('Nickname must be at least 6 characters');
       return;
     }
-    login(nickname);
+    const res = await login(nickname);
+    if (!res.ok) {
+      setError(res.error);
+    }
   };
 
   return (

@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.userList {
+  flex: 0 0 250px;
+  border-right: 1px solid #ccc;
+  background: white;
+}
+
+.chatArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
