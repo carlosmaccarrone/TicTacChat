@@ -11,9 +11,9 @@ export function UsersProvider({ children }) {
   const [loadingUsers, setLoadingUsers] = useState(false);
 
   const socketRef = useRef(null);
-
   const nicknameRef = useRef(nickname);
   const joinedRef = useRef(joined);
+  const retryTimeoutRef = useRef(null);
 
   const setNicknameSafe = (nick) => {
     nicknameRef.current = nick;
@@ -32,11 +32,13 @@ export function UsersProvider({ children }) {
       socketRef.current = io('http://localhost:3001', { autoConnect: false, reconnection: true });
 
       socketRef.current.on('updateUserList', (list) => {
+        clearTimeout(retryTimeoutRef.current); // cancelamos cualquier reintento
         setUsers(list);
-        setLoadingUsers(false); // <-- lista inicial recibida
+        setLoadingUsers(false);
       });
 
       socketRef.current.on('disconnect', () => setJoinedSafe(false));
+
       socketRef.current.on('kicked', () => {
         setNicknameSafe(null);
         setJoinedSafe(false);
@@ -50,6 +52,13 @@ export function UsersProvider({ children }) {
         socketRef.current.emit('joinRoom', nick, (res) => {
           setJoinedSafe(res.ok);
           if (!res.ok) setNicknameSafe(null);
+
+          // Si la lista de usuarios no llega en 500ms, reintentamos
+          if (res.ok && (!socketRef.current || !socketRef.current.connected)) return;
+          retryTimeoutRef.current = setTimeout(() => {
+            socketRef.current.emit('joinRoom', nick, () => {});
+          }, 500);
+
           resolve(res);
         });
       };
@@ -63,6 +72,7 @@ export function UsersProvider({ children }) {
   };
 
   const disconnectSocket = () => {
+    clearTimeout(retryTimeoutRef.current);
     if (!socketRef.current || !joinedRef.current) return;
     socketRef.current.emit('leaveRoom', () => {
       setNicknameSafe(null);
