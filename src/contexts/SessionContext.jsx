@@ -1,70 +1,63 @@
-// SessionContext.jsx
-import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useUsers } from './UsersContext';
 
 export const SessionContext = createContext({});
 export const useSession = () => useContext(SessionContext);
 
 export function SessionProvider({ children }) {
-  const [nickname, setNickname] = useState(() => sessionStorage.getItem('nickname') || null);
-  const [sessionLoading, setSessionLoading] = useState(true);
-  const { addUserToSocket, removeUserFromSocket } = useUsers();
-  const bootedRef = useRef(false);
+  const [sessionLoading, setSessionLoading] = useState(false);
+  const [loginAttempted, setLoginAttempted] = useState(false);
+  const { connectSocket, disconnectSocket } = useUsers();
+  const [nickname, setNickname] = useState(null);
+  const [error, setError] = useState('');
 
   const hasNickname = Boolean(nickname);
 
   useEffect(() => {
-    if (bootedRef.current) return;
-    bootedRef.current = true;
+    const stored = sessionStorage.getItem('nickname');
+    if (stored) setNickname(stored);
+  }, []);
 
-    const boot = async () => {
-      if (!nickname) {
-        setSessionLoading(false);
-        return;
-      }
-
-      setSessionLoading(true);
-      const res = await addUserToSocket(nickname);
-      // si falla, solo resetea si hay error real
-      if (!res.ok && res.error === 'nickname in use') {
-        setNickname(null);
-        sessionStorage.removeItem('nickname');
-      }
-      setSessionLoading(false);
-    };
-    boot();
+  const resetSession = useCallback(() => {
+    setNickname(null);
+    sessionStorage.removeItem('nickname');
+    setError('');
+    setLoginAttempted(false);
   }, []);
 
   const login = async (name) => {
-    const res = await addUserToSocket(name);
-    if (res.ok) {
+    setLoginAttempted(true);
+    setSessionLoading(true);
+    setError('');
+
+    try {
+      const res = await connectSocket(name);
+
+      if (!res.ok) {
+        setError(res.error);
+        return res;
+      }
+
       setNickname(name);
+      sessionStorage.setItem('nickname', name);
       return { ok: true };
-    } else {
-      return { ok: false, error: res.error || 'Nickname already in use!' };
+    } catch (err) {
+      const msg = err.message || 'Unexpected error';
+      setError(msg);
+      return { ok: false, error: msg };
+    } finally {
+      setSessionLoading(false);
     }
   };
 
-  const logout = async () => {
-    if (nickname) {
-      await removeUserFromSocket();
-      setNickname(null);
-    }
+  const logout = () => {
+    disconnectSocket();
+    resetSession();
   };
-
-  useEffect(() => {
-    if (nickname) sessionStorage.setItem('nickname', nickname);
-    else sessionStorage.removeItem('nickname');
-  }, [nickname]);
 
   return (
-    <SessionContext.Provider value={{
-      nickname,
-      hasNickname,
-      sessionLoading,
-      login,
-      logout
-    }}>
+    <SessionContext.Provider
+      value={{ nickname, hasNickname, sessionLoading, loginAttempted, login, logout, error, setError }}>
       {children}
     </SessionContext.Provider>
   );

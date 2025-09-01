@@ -6,7 +6,7 @@ import { useUsers } from '@/contexts/UsersContext';
 /*import PopUp from '@/pages/ChatRoom/PopUp/PopUp';*/
 
 export default function ChatRoomPage() {
-  const { users, joined, loadingUsers } = useUsers();
+	const { users, loadingUsers } = useUsers();
 
   return (
     <div className={styles.container}>

@@ -6,35 +6,23 @@ import ChatRoomPage from '@/pages/ChatRoom/ChatRoom';
 import PrivateLayout from '@/layouts/PrivateLayout';
 import Spinner from '@/components/Spinner/Spinner';
 
-function NicknameRoute({ requireNickname, redirectTo }) {
-  const { hasNickname, sessionLoading } = useSession();
-
-  if (sessionLoading) return <Spinner />;
-
-  if (requireNickname && !hasNickname) return <Navigate to={redirectTo} replace />;
-  if (!requireNickname && hasNickname) return <Navigate to={redirectTo} replace />;
-
-  return <Outlet />;
+function AuthRoute({ checkAuth, redirectTo }) {
+  const { hasNickname, sessionLoading, loginAttempted } = useSession();
+  if (sessionLoading && loginAttempted) return <Spinner />;
+  return checkAuth(hasNickname) ? <Outlet /> : <Navigate to={redirectTo} replace />;
 }
 
-
 function PrivateRoute() {
-  const { hasNickname, connecting } = useSession();
-
-  if (connecting) return <Spinner />;
-  if (!hasNickname) return <Navigate to="/" replace />;
-
-  return <Outlet />;
+  return <AuthRoute checkAuth={(hasNickname) => hasNickname} redirectTo="/" />;
 }
 
 function PublicRoute() {
-  return <NicknameRoute requireNickname={false} redirectTo="/chatroom" />;
+  return <AuthRoute checkAuth={(hasNickname) => !hasNickname} redirectTo="/chatroom" />;
 }
 
 export default function AppRoutes() {
   return (
     <Routes>
-
       <Route element={<PublicRoute />}>
         <Route path="/" element={<NicknamePage />} />
       </Route>

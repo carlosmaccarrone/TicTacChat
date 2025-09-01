@@ -2,30 +2,44 @@ import styles from '@/pages/Nickname/NicknameForm.module.css';
 import NicknameInput from '@/pages/Nickname/NicknameInput';
 import SubmitButton from '@/pages/Nickname/SubmitButton';
 import { useSession } from '@/contexts/SessionContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const NicknameForm = () => {
-  const { login } = useSession();
-  const [nickname, setNickname] = useState('');
-  const [error, setError] = useState('');
+  const [nicknameInput, setNicknameInput] = useState(() => sessionStorage.getItem('nickname') || '');
+  const { login, sessionLoading, error: sessionError, setError: setSessionError } = useSession();
+  const [localError, setLocalError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (sessionError) {
+      setLocalError(sessionError);
+      setSessionError('');
+    }
+  }, [sessionError, setSessionError]);
 
   const handleChange = (evt) => {
     const value = evt.target.value;
     if (/^[a-zA-Z0-9]{0,14}$/.test(value)) {
-      setNickname(value);
-      setError('');
+      setNicknameInput(value);
+      if (localError) setLocalError('');
     }
   };
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    if (nickname.length < 6) {
-      setError('Nickname must be at least 6 characters');
+
+    if (nicknameInput.length < 6) {
+      setLocalError('Nickname must be at least 6 characters');
       return;
     }
-    const res = await login(nickname);
+
+    setLoading(true);
+    const res = await login(nicknameInput);
+    setLoading(false);
+
     if (!res.ok) {
-      setError(res.error);
+      setLocalError(res.error);
+      return;
     }
   };
 
@@ -33,17 +47,19 @@ const NicknameForm = () => {
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.inputContainer}>
         <NicknameInput
-          value={nickname}
+          value={nicknameInput}
           onChange={handleChange}
-          error={error}
+          error={localError}
           placeholder="Your legendary nickname"
         />
       </div>
       <div className={styles.buttonContainer}>
-        <SubmitButton>Join</SubmitButton>
+        <SubmitButton disabled={loading || sessionLoading}>
+          {loading || sessionLoading ? 'Joining...' : 'Join'}
+        </SubmitButton>
       </div>
     </form>
   );
-}
+};
 
 export default NicknameForm;
