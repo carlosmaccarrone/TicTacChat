@@ -4,8 +4,6 @@
   align-items: center;
   justify-content: center;
   padding-top: 4rem;
-/*  min-height: 60vh; */
-/*  min-height: calc(100vh - var(--navbar-height));*/
   color: #91A8E0;
   font-family: "Comic Sans MS", cursive, sans-serif;
   font-size: 1.5rem;
@@ -24,10 +22,4 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-@media (max-width: 768px) {
-  .container {
-/*    min-height: calc(100vh - var(--navbar-height));*/
-  }
 }

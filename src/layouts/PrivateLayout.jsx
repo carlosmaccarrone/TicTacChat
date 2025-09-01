@@ -32,7 +32,12 @@ const PrivateLayout = ({ navbarType }) => {
     <>
       {navbarType === 'chat' && <NavbarChat ref={navbarRef} />}
       {navbarType === 'game' && <NavbarGame ref={navbarRef} />}
-      <div style={{ paddingTop: `${navbarHeight}px` }}>
+      <div 
+        style={{
+          paddingTop: `${navbarHeight}px`,
+          height: `calc(100vh - ${navbarHeight}px)`,
+        }}
+      >
         <Outlet />
       </div>
     </>

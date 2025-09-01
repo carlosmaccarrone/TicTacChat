@@ -1,4 +1,4 @@
-import styles from '@/pages/Nickname/TitleSection.module.css';
+import styles from '@/pages/Nickname/TitleSection/TitleSection.module.css';
 
 const TitleSection = ({ title, subtitle }) => {
   return (

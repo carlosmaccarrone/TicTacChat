@@ -1,4 +1,4 @@
-import styles from '@/pages/Nickname/SubmitButton.module.css';
+import styles from '@/pages/Nickname/NicknameForm/SubmitButton.module.css';
 
 const SubmitButton = ({ children }) => {
   return (

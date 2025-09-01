@@ -1,6 +1,6 @@
+import TitleSection from '@/pages/Nickname/TitleSection/TitleSection';
+import NicknameForm from '@/pages/Nickname/NicknameForm/NicknameForm';
 import styles from '@/pages/Nickname/NicknamePage.module.css';
-import TitleSection from '@/pages/Nickname/TitleSection';
-import NicknameForm from '@/pages/Nickname/NicknameForm';
 
 export default function NicknamePage() {
   return (

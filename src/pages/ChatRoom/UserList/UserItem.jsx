@@ -1,7 +1,7 @@
 import styles from '@/pages/ChatRoom/UserList/UserItem.module.css';
 import { useState } from 'react';
 
-export default function UserItem({ user }) {
+const UserItem = ({ user, ownNickname }) => {
   const [waiting, setWaiting] = useState(false);
 
   const handleChallenge = () => {
@@ -15,17 +15,21 @@ export default function UserItem({ user }) {
   return (
     <div className={styles.container}>
       <span className={styles.nickname} style={{ color: statusColor }}>
-        {user.nickname}
+        👤 {user.nickname}
       </span>
-      <span
-        className={styles.challenge}
-        role="button"
-        onClick={handleChallenge}
-        title="Challenge"
-      >
-        ⚔️
-      </span>
+      {user.nickname !== ownNickname && (
+        <span
+          className={styles.challenge}
+          role="button"
+          onClick={handleChallenge}
+          title="Challenge"
+        >
+          ⚔️
+        </span>
+      )}
       {waiting && <span className={styles.waiting}>⏳</span>}
     </div>
   );
 }
+
+export default UserItem;

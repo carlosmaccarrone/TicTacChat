@@ -2,8 +2,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 8px;
-  border-bottom: 1px solid #eee;
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  margin-bottom: 4px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.container:hover {
+  transform: scale(1.02); /* agrandado muy sutil */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); /* sombra un poco más intensa */
 }
 
 .nickname {

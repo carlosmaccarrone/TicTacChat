@@ -1,4 +1,4 @@
-import styles from '@/pages/Nickname/NicknameInput.module.css';
+import styles from '@/pages/Nickname/NicknameForm/NicknameInput.module.css';
 
 const NicknameInput = ({ value, onChange, error, placeholder }) => {
   return (

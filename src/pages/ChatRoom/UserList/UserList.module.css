@@ -3,11 +3,22 @@
   flex-direction: column;
   padding: 8px;
   overflow-y: auto;
-  height: 100%;
+  overflow-x: hidden;
+  background-color: #91A8E0;
+  border-right: 2px solid white;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  direction: rtl;
 }
 
-.placeholder {
+.container > * { direction: ltr; }
+.container::-webkit-scrollbar { width: 6px; }
+.container::-webkit-scrollbar-track { background: transparent; }
+.container::-webkit-scrollbar-thumb { background-color: #232C46; border-radius: 3px; }
+.container { scrollbar-width: thin; scrollbar-color: #232C46 transparent; }
+
+.userCount {
+  font-weight: bold;
+  margin-bottom: 8px;
   text-align: center;
-  color: #888;
-  margin-top: 20px;
+  color: #444;
 }

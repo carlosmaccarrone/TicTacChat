@@ -1,7 +1,6 @@
 body, #root {
   background-color: #232C46;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  margin: 0;  
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }

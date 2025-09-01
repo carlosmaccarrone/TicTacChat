@@ -13,8 +13,8 @@
   border-bottom: 2px solid white;
   border-left: 2px solid white;
   border-right: 2px solid white;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;  
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;  
 }
 
 .left {
@@ -39,10 +39,8 @@
 .center {
   flex: 1;
   display: flex;
-/*  justify-content: center;*/
 }
 
 .right {
   display: flex;
-/*  align-items: center;*/
 }

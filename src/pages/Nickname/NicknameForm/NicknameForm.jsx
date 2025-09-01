@@ -1,6 +1,6 @@
-import styles from '@/pages/Nickname/NicknameForm.module.css';
-import NicknameInput from '@/pages/Nickname/NicknameInput';
-import SubmitButton from '@/pages/Nickname/SubmitButton';
+import styles from '@/pages/Nickname/NicknameForm/NicknameForm.module.css';
+import NicknameInput from '@/pages/Nickname/NicknameForm/NicknameInput';
+import SubmitButton from '@/pages/Nickname/NicknameForm/SubmitButton';
 import { useSession } from '@/contexts/SessionContext';
 import { useState, useEffect } from 'react';
 
