@@ -36,29 +36,44 @@ const mockUsers = [
   { nickname: 'esteban', status: 'idle' },
 ];
 
-const UserList = () => {
+const UserList = ({ isCollapsed, setCollapsed }) => {
   const { nickname: ownNickname } = useSession();
   const { users, loadingUsers } = useUsers();
   const userCount = users.length;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.userCount}>
-        {userCount} {userCount === 1 ? 'user' : 'users'} online
+    <>
+      <div className={`${styles.userCount} ${isCollapsed ? styles.collapsed : ''}`}>
+        {!isCollapsed && (
+          <>
+            {userCount} {userCount === 1 ? 'user' : 'users'} online
+          </>
+        )}
+        <button
+          className={styles.collapseButton} 
+          onClick={() => setCollapsed(!isCollapsed)}
+        >
+          {isCollapsed ? '▶️' : '◀️'}
+        </button>
       </div>
+      <div className={`${styles.container} ${isCollapsed ? styles.collapsed : ''}`}>
+        {!isCollapsed && (
+          <>
+            {loadingUsers && users.length === 0 && (
+              <div className={styles.placeholder}>Loading users...</div>
+            )}
 
-      {loadingUsers && users.length === 0 && (
-        <div className={styles.placeholder}>Loading users...</div>
-      )}
-
-      {mockUsers.map((user) => (
-        <UserItem
-          key={user.nickname}
-          user={user}
-          ownNickname={ownNickname}
-        />
-      ))}
-    </div>
+            {mockUsers.map((user) => (
+              <UserItem
+                key={user.nickname}
+                user={user}
+                ownNickname={ownNickname}
+              />
+            ))}
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

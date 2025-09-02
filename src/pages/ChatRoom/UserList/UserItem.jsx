@@ -6,7 +6,7 @@ const UserItem = ({ user, ownNickname }) => {
 
   const handleChallenge = () => {
     setWaiting(true);
-    // Aquí mañana integraremos la lógica de enviar reto al backend
+    // Here I will integrate the logic of sending challenge to the backend
     console.log(`Challenged ${user.nickname}`);
   };
 
@@ -24,10 +24,9 @@ const UserItem = ({ user, ownNickname }) => {
           onClick={handleChallenge}
           title="Challenge"
         >
-          ⚔️
+          {waiting ? "⏳" : "⚔️"}
         </span>
       )}
-      {waiting && <span className={styles.waiting}>⏳</span>}
     </div>
   );
 }

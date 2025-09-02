@@ -1,25 +1,27 @@
-/*import MessageScreen from '@/pages/ChatRoom/MessageScreen/MessageScreen';*/
-/*import MessageInput from '@/pages/ChatRoom/MessageInput/MessageInput';*/
+import MessageScreen from '@/components/MessageScreen/MessageScreen';
+import MessageInput from '@/components/MessageInput/MessageInput';
+import { useElementHeight } from "@/hooks/useElementHeight";
 import styles from '@/pages/ChatRoom/ChatRoom.module.css';
 import UserList from '@/pages/ChatRoom/UserList/UserList';
-/*import PopUp from '@/pages/ChatRoom/PopUp/PopUp';*/
+import { useState } from 'react';
 
 export default function ChatRoomPage() {
+  const [collapsed, setCollapsed] = useState(false);
+  const [inputRef, inputHeight] = useElementHeight();
+
   return (
-    <div className={styles.container}>
-      {/* User List */}
+    <div className={styles.container} style={{ "--input-height": `${inputHeight}px` }}>
       <div className={styles.userList}>
-        <UserList />
+        <UserList isCollapsed={collapsed} setCollapsed={setCollapsed} />
       </div>
-
-      {/* Chat area */}
       <div className={styles.chatArea}>
-{/*        <MessageScreen />
-        <MessageInput />*/}
+        <div className={styles.messageScreen}>
+          <MessageScreen />
+        </div>
+        <div className={styles.messageInput}>
+          <MessageInput ref={inputRef} />
+        </div>
       </div>
-
-      {/* PopUp para retos */}
-{/*      <PopUp />*/}
     </div>
   );
 }

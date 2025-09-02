@@ -13,15 +13,16 @@
   border-bottom: 2px solid white;
   border-left: 2px solid white;
   border-right: 2px solid white;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;  
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;  
 }
 
 .left {
   display: flex;
   flex-direction: column;
   -webkit-text-stroke: 0.4px #232C46;
-  text-stroke: 0.4px #232C46;    
+  text-stroke: 0.4px #232C46;
+  user-select: none;
 }
 
 .title {
