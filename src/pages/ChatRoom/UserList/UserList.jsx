@@ -43,12 +43,14 @@ const UserList = ({ isCollapsed, setCollapsed }) => {
 
   return (
     <>
-      <div className={`${styles.userCount} ${isCollapsed ? styles.collapsed : ''}`}>
-        {!isCollapsed && (
-          <>
-            {userCount} {userCount === 1 ? 'user' : 'users'} online
-          </>
-        )}
+      <div className={`${styles.title} ${isCollapsed ? styles.collapsed : ''}`}>
+        <span className={`${styles.userCount} ${isCollapsed ? styles.collapsed : ''}`}>
+          {!isCollapsed && (
+            <>
+              {userCount} {userCount === 1 ? 'user' : 'users'} online
+            </>
+          )}
+        </span>
         <button
           className={styles.collapseButton} 
           onClick={() => setCollapsed(!isCollapsed)}
