@@ -6,9 +6,19 @@ import { useState, useEffect } from 'react';
 
 const NicknameForm = () => {
   const [nicknameInput, setNicknameInput] = useState(() => sessionStorage.getItem('nickname') || '');
-  const { login, sessionLoading, error: sessionError, setError: setSessionError } = useSession();
+  const { login, loginLoading, error: sessionError, setError: setSessionError } = useSession();
+  const [showLoading, setShowLoading] = useState(false);
   const [localError, setLocalError] = useState('');
-  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let timer;
+    if (loginLoading) {
+      setShowLoading(true);
+    } else {
+      timer = setTimeout(() => setShowLoading(false), 250); // wait 25ms before hiding the loading
+    }
+    return () => clearTimeout(timer);
+  }, [loginLoading]);
 
   useEffect(() => {
     if (sessionError) {
@@ -33,9 +43,7 @@ const NicknameForm = () => {
       return;
     }
 
-    setLoading(true);
     const res = await login(nicknameInput);
-    setLoading(false);
 
     if (!res.ok) {
       setLocalError(res.error);
@@ -54,8 +62,8 @@ const NicknameForm = () => {
         />
       </div>
       <div className={styles.buttonContainer}>
-        <SubmitButton disabled={loading || sessionLoading}>
-          {loading || sessionLoading ? 'Joining...' : 'Join'}
+        <SubmitButton disabled={showLoading}>
+          {showLoading ? 'Joining...' : 'Join'}
         </SubmitButton>
       </div>
     </form>

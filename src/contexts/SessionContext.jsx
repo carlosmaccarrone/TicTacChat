@@ -1,72 +1,58 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { useUsers } from '@/contexts/UsersContext';
 
 export const SessionContext = createContext({});
 export const useSession = () => useContext(SessionContext);
 
 export function SessionProvider({ children }) {
+  const [loginLoading, setLoginLoading] = useState(false);
   const { connectSocket, disconnectSocket } = useUsers();
-
-  const [sessionState, setSessionState] = useState({
-    nickname: null,
-    sessionLoading: false,
-    loginAttempted: false,
-    error: '',
-  });
-
-  const hasNickname = Boolean(sessionState.nickname);
+  const [nickname, setNickname] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const stored = sessionStorage.getItem('nickname');
-    if (stored) setSessionState(prev => ({ ...prev, nickname: stored }));
-  }, []);
-
-  const resetSession = useCallback(() => {
-    setSessionState({
-      nickname: null,
-      sessionLoading: false,
-      loginAttempted: false,
-      error: '',
-    });
-    sessionStorage.removeItem('nickname');
+    if (stored) setNickname(stored);
+    setLoading(false);
   }, []);
 
   const login = async (name) => {
-    setSessionState(prev => ({ ...prev, loginAttempted: true, sessionLoading: true, error: '' }));
-
+    setLoginLoading(true);
+    setError('');
     try {
       const res = await connectSocket(name);
-
       if (!res.ok) {
-        setSessionState(prev => ({ ...prev, error: res.error }));
-        return res;
+        setError(res.error);
+        return { ok: false, error: res.error };
       }
-
       sessionStorage.setItem('nickname', name);
-      setSessionState(prev => ({ ...prev, nickname: name }));
+      setNickname(name);
       return { ok: true };
     } catch (err) {
       const msg = err.message || 'Unexpected error';
-      setSessionState(prev => ({ ...prev, error: msg }));
+      setError(msg);
       return { ok: false, error: msg };
     } finally {
-      setSessionState(prev => ({ ...prev, sessionLoading: false }));
+      setLoginLoading(false);
     }
   };
 
   const logout = () => {
     disconnectSocket();
-    resetSession();
+    sessionStorage.removeItem('nickname');
+    setNickname(null);
+    setError('');
   };
 
   return (
     <SessionContext.Provider
       value={{
-        ...sessionState,
-        hasNickname,
+        nickname,
         login,
+        loginLoading,
         logout,
-        setError: (error) => setSessionState(prev => ({ ...prev, error })),
+        loading,
       }}
     >
       {children}

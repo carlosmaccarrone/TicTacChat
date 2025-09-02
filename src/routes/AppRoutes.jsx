@@ -7,17 +7,17 @@ import PrivateLayout from '@/layouts/PrivateLayout';
 import Spinner from '@/components/Spinner/Spinner';
 
 function AuthRoute({ checkAuth, redirectTo }) {
-  const { hasNickname, sessionLoading, loginAttempted } = useSession();
-  if (sessionLoading && loginAttempted) return <Spinner />;
-  return checkAuth(hasNickname) ? <Outlet /> : <Navigate to={redirectTo} replace />;
+  const { nickname, loading } = useSession();
+  if (loading) return <Spinner />;
+  return checkAuth(!!nickname) ? <Outlet /> : <Navigate to={redirectTo} replace />;
 }
 
 function PrivateRoute() {
-  return <AuthRoute checkAuth={(hasNickname) => hasNickname} redirectTo="/" />;
+  return <AuthRoute checkAuth={(isLogged) => isLogged} redirectTo="/" />;
 }
 
 function PublicRoute() {
-  return <AuthRoute checkAuth={(hasNickname) => !hasNickname} redirectTo="/chatroom" />;
+  return <AuthRoute checkAuth={(isLogged) => !isLogged} redirectTo="/chatroom" />;
 }
 
 export default function AppRoutes() {
@@ -34,7 +34,7 @@ export default function AppRoutes() {
         <Route element={<PrivateLayout navbarType="game" />}>
           <Route path="/gameplay" element={<GamePlayPage />} />
         </Route>
-      </Route>
+      </Route>*
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

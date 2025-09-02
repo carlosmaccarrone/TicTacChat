@@ -6,6 +6,7 @@ export const useUsers = () => useContext(UsersContext);
 
 export function UsersProvider({ children }) {
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const socketRef = useRef(null);
 
@@ -34,6 +35,14 @@ export function UsersProvider({ children }) {
           });
         });
 
+        socketRef.current.on('chat:recentMessages', (msgs) => {
+          setMessages(msgs); // listen to the latest messages when you log in
+        });
+
+        socketRef.current.on('chat:newMessage', (msg) => {
+          setMessages(prev => [...prev, msg]); // listen to new messages
+        });
+
         socketRef.current.on('disconnect', (reason) => {
           setUsers([]);
           setLoadingUsers(true);
@@ -43,6 +52,12 @@ export function UsersProvider({ children }) {
         resolve({ ok: false, error: err.message || 'Socket connection failed' });
       }
     });
+  };
+
+  const sendMessage = (text) => {
+    if (socketRef.current) {
+      socketRef.current.emit('chat:newMessage', text);
+    }
   };
 
   const disconnectSocket = () => {
@@ -58,7 +73,8 @@ export function UsersProvider({ children }) {
   useEffect(() => {
     return () => {
       if (socketRef.current) {
-        socketRef.current.off();
+        socketRef.current.off('chat:recentMessages');
+        socketRef.current.off('chat:newMessage');
         socketRef.current.disconnect();
         socketRef.current = null;
       }
@@ -66,7 +82,14 @@ export function UsersProvider({ children }) {
   }, []);
 
   return (
-    <UsersContext.Provider value={{ users, loadingUsers, connectSocket, disconnectSocket }}>
+    <UsersContext.Provider value={{
+      users,
+      loadingUsers,
+      messages,
+      sendMessage,
+      connectSocket,
+      disconnectSocket
+    }}>
       {children}
     </UsersContext.Provider>
   );

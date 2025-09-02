@@ -1,51 +1,26 @@
 import styles from '@/components/MessageScreen/MessageScreen.module.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useContext, useState } from 'react';
+import { useSession } from '@/contexts/SessionContext';
 
-const mockMessages = [
-  { id: 1, sender: 'charly', text: 'Hola, cómo estás?', own: true },
-  { id: 2, sender: 'ana', text: 'Bien, ¿y vos?', own: false },
-  { id: 3, sender: 'charly', text: 'Todo tranquilo 😎', own: true },
-  { id: 4, sender: 'esteban', text: 'Chicos, llego tarde hoy', own: false },
-  { id: 1, sender: 'charly', text: 'Hola, cómo estás?', own: true },
-  { id: 2, sender: 'ana', text: 'Bien, ¿y vos?', own: false },
-  { id: 3, sender: 'charly', text: 'Todo tranquilo 😎', own: true },
-  { id: 4, sender: 'esteban', text: 'Chicos, llego tarde hoy', own: false },
-  { id: 1, sender: 'charly', text: 'Hola, cómo estás?', own: true },
-  { id: 2, sender: 'ana', text: 'Bien, ¿y vos?', own: false },
-  { id: 3, sender: 'charly', text: 'Todo tranquilo 😎', own: true },
-  { id: 4, sender: 'esteban', text: 'Chicos, llego tarde hoy', own: false },
-  { id: 1, sender: 'charly', text: 'Hola, cómo estás?', own: true },
-  { id: 2, sender: 'ana', text: 'Bien, ¿y vos?', own: false },
-  { id: 3, sender: 'charly', text: 'Todo tranquilo 😎', own: true },
-  { id: 4, sender: 'esteban', text: 'Chicos, llego tarde hoy', own: false },
-  { id: 1, sender: 'charly', text: 'Hola, cómo estás?', own: true },
-  { id: 2, sender: 'ana', text: 'Bien, ¿y vos?', own: false },
-  { id: 3, sender: 'charly', text: 'Todo tranquilo 😎', own: true },
-  { id: 4, sender: 'esteban', text: 'Chicos, llego tarde hoy', own: false },
-  { id: 1, sender: 'charly', text: 'Hola, cómo estás?', own: true },
-  { id: 2, sender: 'ana', text: 'Bien, ¿y vos?', own: false },
-  { id: 3, sender: 'charly', text: 'Todo tranquilo 😎', own: true },
-  { id: 4, sender: 'esteban', text: 'Chicos, llego tarde hoy', own: false },
-  { id: 4, sender: 'esteban', text: 'pepito', own: false }         
-];
-
-export default function MessageScreen() {
+export default function MessageScreen({ usersContext }) {
+  const { messages } = useContext(usersContext);
+  const { nickname } = useSession();
   const containerRef = useRef(null);
 
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
-  }, []);
+  }, [messages]);
 
   return (
     <div className={styles.container} ref={containerRef}>
-      {mockMessages.map(msg => (
+      {messages.map((msg, index) => (
         <div
-          key={msg.id}
-          className={`${styles.message} ${msg.own ? styles.own : ''}`}
+          key={index}
+          className={`${styles.message} ${msg.from === nickname ? styles.own : ''}`}
         >
-          {!msg.own && <div className={styles.sender}>{msg.sender}</div>}
+          {msg.from !== nickname && <div className={styles.sender}>{msg.from}</div>}
           <div className={styles.text}>{msg.text}</div>
         </div>
       ))}

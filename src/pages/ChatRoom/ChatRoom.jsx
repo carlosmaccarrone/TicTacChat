@@ -3,6 +3,7 @@ import MessageInput from '@/components/MessageInput/MessageInput';
 import { useElementHeight } from "@/hooks/useElementHeight";
 import styles from '@/pages/ChatRoom/ChatRoom.module.css';
 import UserList from '@/pages/ChatRoom/UserList/UserList';
+import { UsersContext } from '@/contexts/UsersContext';
 import { useState } from 'react';
 
 export default function ChatRoomPage() {
@@ -16,7 +17,7 @@ export default function ChatRoomPage() {
       </div>
       <div className={styles.chatArea}>
         <div className={styles.messageScreen}>
-          <MessageScreen />
+          <MessageScreen usersContext={UsersContext} />
         </div>
         <div className={styles.messageInput}>
           <MessageInput ref={inputRef} />
