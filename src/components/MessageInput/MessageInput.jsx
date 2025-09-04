@@ -9,6 +9,7 @@ const MessageInput = forwardRef(({ onSend }, ref) => {
   const [showEmojis, setShowEmojis] = useState(false);
   const { sendMessage } = useUsers();
   const containerRef = useRef(null);
+  const inputRef = useRef(null);
 
   const handleSend = () => {
     if (message.trim() === "") return;
@@ -20,6 +21,10 @@ const MessageInput = forwardRef(({ onSend }, ref) => {
   const handleEmojiClick = (emoji) => {
     setMessage((prev) => prev + emoji);
     setShowEmojis(false);
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }    
   };
 
   useEffect(() => {
@@ -47,6 +52,7 @@ const MessageInput = forwardRef(({ onSend }, ref) => {
 
       <div className={styles.inputWithSend}>
         <TextInputWithSend
+          ref={inputRef}
           value={message}
           onChange={setMessage}
           onSend={handleSend}

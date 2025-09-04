@@ -40,8 +40,32 @@
 .center {
   flex: 1;
   display: flex;
+  justify-content: center;  
+  align-items: center;    
 }
 
 .right {
   display: flex;
+}
+
+.buttons {
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  transition: transform 0.2s ease;
+  -webkit-text-stroke: 0.4px #232C46;
+  text-stroke: 0.4px #232C46;
+}
+
+.buttons:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .subtitle {
+    font-size: 8px;
+  }
 }

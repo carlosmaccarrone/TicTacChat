@@ -1,6 +1,7 @@
 import styles from "@/components/MessageInput/TextInputWithSend.module.css";
+import { forwardRef } from "react";
 
-const TextInputWithSend = ({ value, onChange, onSend, onFocus }) => {
+const TextInputWithSend = forwardRef(({ value, onChange, onSend, onFocus }, ref) => {
   const handleKeyDown = (evt) => {
     if (evt.key === "Enter") {
       onSend?.();
@@ -10,6 +11,7 @@ const TextInputWithSend = ({ value, onChange, onSend, onFocus }) => {
   return (
     <div className={styles.container}>
       <input
+        ref={ref}
         className={styles.input}
         type="text"
         value={value}
@@ -23,6 +25,6 @@ const TextInputWithSend = ({ value, onChange, onSend, onFocus }) => {
       </button>
     </div>
   );
-}
+});
 
 export default TextInputWithSend;

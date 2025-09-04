@@ -15,11 +15,6 @@ const PrivateLayout = ({ navbarType }) => {
     }
   }, []);
 
-  const handleRefreshClick = () => {
-    const confirmed = window.confirm("You'll be redirected to login. Continue?");
-    if (confirmed) logout();
-  };
-
   useEffect(() => {
     const handleBeforeUnload = () => {
       logout();

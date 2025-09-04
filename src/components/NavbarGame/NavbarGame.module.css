@@ -1,0 +1,21 @@
+.score {
+  font-family: 'Bangers', cursive;
+  font-size: 16px;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  text-align: center;
+  letter-spacing: 1px;
+  user-select: none;
+  flex-shrink: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+@media (max-width: 768px) {
+  .score {
+    font-size: 13px;
+    margin: 4px auto 0 auto;
+  }
+}
