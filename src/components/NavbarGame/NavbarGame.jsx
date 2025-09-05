@@ -13,7 +13,7 @@ const NavbarGame = ({ onMount }) => {
       onMount={onMount}
       centerSlot={
         <span className={gameStyles.score}>
-          Me: {scores.me} | Opponent: {scores.opponent}
+          Me: <span style={{color:"yellow"}}>{scores.me}</span> | Opponent: <span style={{color:"yellow"}}>{scores.opponent}</span>
         </span>
       }
       rightSlot={

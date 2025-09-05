@@ -6,6 +6,12 @@ import PrivateLayout from '@/layouts/PrivateLayout';
 import Spinner from '@/components/Spinner/Spinner';
 import LobbyPage from '@/pages/Lobby/Lobby';
 
+function FallbackRoute({ redirectTo }) {
+  const { loading } = useSession();
+  if (loading) return <Spinner />;
+  return <Navigate to={redirectTo} replace />;
+}
+
 function AuthRoute({ checkAuth, redirectTo }) {
   const { nickname, loading } = useSession();
   if (loading) return <Spinner />;
@@ -36,7 +42,7 @@ export default function AppRoutes() {
         </Route>
       </Route>*
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<FallbackRoute redirectTo="/" />} />
     </Routes>
   );
 }
