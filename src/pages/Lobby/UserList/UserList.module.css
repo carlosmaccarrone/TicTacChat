@@ -10,6 +10,7 @@
   font-family: "Comic Sans MS", cursive, sans-serif;
   direction: rtl;
   position: relative;
+  border-bottom-right-radius: 6px;
 }
 
 .container > * { direction: ltr; }

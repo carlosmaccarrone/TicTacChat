@@ -35,9 +35,7 @@ const PrivateLayout = ({ navbarType }) => {
   return (
     <RoomProvider mode={mode}>
       <NavbarGame onMount={handleNavbarMount} />
-      <div style={{ paddingTop: `${navbarHeight}px`, height: `calc(100vh - ${navbarHeight}px)` }}>
-        <Outlet />
-      </div>
+      <Outlet context={{ navbarHeight }} />
     </RoomProvider>
   );
 };

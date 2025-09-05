@@ -1,0 +1,64 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  padding: 16px;
+  padding-top: calc(var(--navbar-height) + 16px);
+  height: calc(100vh);
+  box-sizing: border-box;
+}
+
+.gameArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.chatArea {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  box-shadow: -2px 0 4px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding-top: calc(var(--navbar-height) + 16px);
+  }
+
+  .gameArea {
+    flex: 0 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chatArea {
+    top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: 250px;
+    min-height: 250px;
+  }
+
+  .messageScreen {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .messageInput {
+    flex: 0 0 auto;
+  }
+}
