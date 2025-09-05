@@ -1,4 +1,4 @@
-import NavbarChat from '@/components/NavbarChat/NavbarChat';
+import NavbarLobby from '@/components/NavbarLobby/NavbarLobby';
 import NavbarGame from '@/components/NavbarGame/NavbarGame';
 import { Outlet, useSearchParams } from 'react-router-dom';
 import { useSession } from '@/contexts/SessionContext';
@@ -7,14 +7,9 @@ import { useEffect, useState, useRef } from 'react';
 
 const PrivateLayout = ({ navbarType }) => {
   const [navbarHeight, setNavbarHeight] = useState(0);
-  const navbarRef = useRef(null);
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode") || "pvp";
   const { logout } = useSession();
-
-  useEffect(() => {
-    if (navbarRef.current) setNavbarHeight(navbarRef.current.offsetHeight);
-  }, []);
 
   useEffect(() => {
     const handleBeforeUnload = () => logout();
@@ -22,10 +17,14 @@ const PrivateLayout = ({ navbarType }) => {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [logout]);
 
+  const handleNavbarMount = (height) => {
+    setNavbarHeight(height);
+  };
+
   if (navbarType === 'lobby') {
     return (
       <>
-        <NavbarChat ref={navbarRef} />
+        <NavbarLobby onMount={handleNavbarMount} />
         <div style={{ paddingTop: `${navbarHeight}px`, height: `calc(100vh - ${navbarHeight}px)` }}>
           <Outlet />
         </div>
@@ -35,7 +34,7 @@ const PrivateLayout = ({ navbarType }) => {
 
   return (
     <RoomProvider mode={mode}>
-      <NavbarGame ref={navbarRef} />
+      <NavbarGame onMount={handleNavbarMount} />
       <div style={{ paddingTop: `${navbarHeight}px`, height: `calc(100vh - ${navbarHeight}px)` }}>
         <Outlet />
       </div>

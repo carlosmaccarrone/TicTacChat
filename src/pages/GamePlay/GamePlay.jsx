@@ -3,7 +3,7 @@ import Board from "@/pages/GamePlay/Board";
 import ResultMessage from "@/pages/GamePlay/ResultMessage";
 import { useSearchParams } from "react-router-dom";
 
-function GamePlayContent() {
+export default function GamePlayPage() {
   const { board, turn, winner, playerMarks, checkWinner, handleMove, handleRestart } = useRoom();
 
   return (
@@ -23,16 +23,5 @@ function GamePlayContent() {
         handleRestart={handleRestart}
       />
     </>
-  );
-}
-
-export default function GamePlayPage() {
-  const [searchParams] = useSearchParams();
-  const mode = searchParams.get("mode") || "pvp";
-
-  return (
-    <RoomProvider mode={mode}>
-      <GamePlayContent />
-    </RoomProvider>
   );
 }
