@@ -1,12 +1,12 @@
 import MessageScreen from '@/components/MessageScreen/MessageScreen';
 import MessageInput from '@/components/MessageInput/MessageInput';
 import { useElementHeight } from "@/hooks/useElementHeight";
-import styles from '@/pages/ChatRoom/ChatRoom.module.css';
-import UserList from '@/pages/ChatRoom/UserList/UserList';
+import UserList from '@/pages/Lobby/UserList/UserList';
 import { UsersContext } from '@/contexts/UsersContext';
+import styles from '@/pages/Lobby/Lobby.module.css';
 import { useState } from 'react';
 
-export default function ChatRoomPage() {
+export default function LobbyPage() {
   const [collapsed, setCollapsed] = useState(false);
   const [inputRef, inputHeight] = useElementHeight();
 

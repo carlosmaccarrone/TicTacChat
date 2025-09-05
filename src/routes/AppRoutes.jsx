@@ -2,9 +2,9 @@ import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import NicknamePage from '@/pages/Nickname/NicknamePage';
 import { useSession } from '@/contexts/SessionContext';
 import GamePlayPage from '@/pages/GamePlay/GamePlay';
-import ChatRoomPage from '@/pages/ChatRoom/ChatRoom';
 import PrivateLayout from '@/layouts/PrivateLayout';
 import Spinner from '@/components/Spinner/Spinner';
+import LobbyPage from '@/pages/Lobby/Lobby';
 
 function AuthRoute({ checkAuth, redirectTo }) {
   const { nickname, loading } = useSession();
@@ -17,7 +17,7 @@ function PrivateRoute() {
 }
 
 function PublicRoute() {
-  return <AuthRoute checkAuth={(isLogged) => !isLogged} redirectTo="/chatroom" />;
+  return <AuthRoute checkAuth={(isLogged) => !isLogged} redirectTo="/lobby" />;
 }
 
 export default function AppRoutes() {
@@ -28,8 +28,8 @@ export default function AppRoutes() {
       </Route>
 
       <Route element={<PrivateRoute />}>
-        <Route element={<PrivateLayout navbarType="chat" />}>
-          <Route path="/chatroom" element={<ChatRoomPage />} />
+        <Route element={<PrivateLayout navbarType="lobby" />}>
+          <Route path="/lobby" element={<LobbyPage />} />
         </Route>
         <Route element={<PrivateLayout navbarType="game" />}>
           <Route path="/gameplay" element={<GamePlayPage />} />

@@ -1,4 +1,4 @@
-import styles from '@/pages/ChatRoom/UserList/UserItem.module.css';
+import styles from '@/pages/Lobby/UserList/UserItem.module.css';
 import { useState } from 'react';
 
 const UserItem = ({ user, ownNickname }) => {

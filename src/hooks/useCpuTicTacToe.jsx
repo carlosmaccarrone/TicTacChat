@@ -47,39 +47,41 @@ export function getCpuMove(board, cpuSymbol) {
   return available.length > 0 ? available[Math.floor(Math.random() * available.length)] : null;
 }
 
-export function useCpuTicTacToe({ board, setBoard, turn, setTurn, setWinner, checkWinner }) {
+export function useCpuTicTacToe({ board, setBoard, turn, setTurn, setWinner, checkWinner, playerMarks }) {
   const handleMove = useCallback((index) => {
-    if (!board[index] && turn === "O") {
-      // player movement
+    const humanSymbol = Object.keys(playerMarks).find(k => playerMarks[k].includes("player"));
+    const cpuSymbol = Object.keys(playerMarks).find(k => playerMarks[k] === "cpu");
+
+    if (!board[index] && turn === humanSymbol) {
+      // player move
       const newBoard = [...board];
-      newBoard[index] = "O";
+      newBoard[index] = humanSymbol;
       setBoard(newBoard);
 
-      // winning check player
       const { winner: playerResult } = checkWinner(newBoard);
       if (playerResult) {
         setWinner(playerResult);
         return;
       }
 
-      // cpu movement
-      const move = getCpuMove(newBoard, "X");
+      // cpu move
+      const move = getCpuMove(newBoard, cpuSymbol);
       if (move !== null) {
         setTimeout(() => {
           const cpuBoard = [...newBoard];
-          cpuBoard[move] = "X";
+          cpuBoard[move] = cpuSymbol;
           setBoard(cpuBoard);
 
           const { winner: cpuResult } = checkWinner(cpuBoard);
           if (cpuResult) {
             setWinner(cpuResult);
           } else {
-            setTurn("O");
+            setTurn(humanSymbol);
           }
         }, 400);
       }
     }
-  }, [board, setBoard, turn, setTurn, setWinner, checkWinner]);
+  }, [board, setBoard, turn, setTurn, setWinner, checkWinner, playerMarks]);
 
   return { handleMove };
 }

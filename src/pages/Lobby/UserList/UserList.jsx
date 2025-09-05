@@ -1,5 +1,5 @@
-import styles from '@/pages/ChatRoom/UserList/UserList.module.css';
-import UserItem from '@/pages/ChatRoom/UserList/UserItem';
+import styles from '@/pages/Lobby/UserList/UserList.module.css';
+import UserItem from '@/pages/Lobby/UserList/UserItem';
 import { useSession } from '@/contexts/SessionContext';
 import { useUsers } from '@/contexts/UsersContext';
 
