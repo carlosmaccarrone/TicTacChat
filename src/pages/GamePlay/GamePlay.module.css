@@ -1,13 +1,19 @@
-.board {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 12px;
-  background-color: #404F6C;
-  border-radius: 12px;
-  padding: 12px;
+.boardWrapper {
+  position: relative;
   width: 300px;
   max-width: 90vw;
   margin: 20px auto;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 12px;
+  background-color: #404F6C;
+  border-radius: 12px;
+  padding: 12px;
+  position: relative;
 }
 
 .cell {
@@ -19,7 +25,6 @@
   justify-content: center;
   cursor: pointer;
   position: relative;
-  transition: background 0.2s;
 }
 
 .cell:hover {
@@ -32,7 +37,7 @@
   position: absolute;
   width: 10px;
   height: 60%;
-  background-color: #22c55e; /* verde */
+  background-color: #22c55e;
   border-radius: 3px;
   top: 50%;
   left: 50%;
@@ -95,5 +100,25 @@
   100% {
     border-color: #ef4444;
     transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.winningLine {
+  position: absolute;
+  border-radius: 8px;
+  background-color: yellow;
+  transition: none;
+}
+
+.winningLine {
+  animation: drawLine 0.5s forwards;
+}
+
+@keyframes drawLine {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--final-width);
   }
 }
