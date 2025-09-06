@@ -3,7 +3,7 @@ import UserItem from '@/pages/Lobby/UserList/UserItem';
 import { useSession } from '@/contexts/SessionContext';
 import { useUsers } from '@/contexts/UsersContext';
 
-const UserList = ({ isCollapsed, setCollapsed }) => {
+const UserList = ({ isCollapsed, setCollapsed, onChallenge }) => {
   const { nickname: ownNickname } = useSession();
   const { users, loadingUsers } = useUsers();
   const userCount = users.length;
@@ -37,6 +37,7 @@ const UserList = ({ isCollapsed, setCollapsed }) => {
                 key={user.nickname}
                 user={user}
                 ownNickname={ownNickname}
+                onChallenge={onChallenge}
               />
             ))}
           </>

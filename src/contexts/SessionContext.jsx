@@ -1,61 +1,44 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { useUsers } from '@/contexts/UsersContext';
+import { createContext, useContext, useState, useEffect } from "react";
+import { useSocket } from "@/contexts/SocketContext";
 
 export const SessionContext = createContext({});
 export const useSession = () => useContext(SessionContext);
 
-export function SessionProvider({ children }) {
-  const [loginLoading, setLoginLoading] = useState(false);
-  const { connectSocket, disconnectSocket } = useUsers();
-  const [nickname, setNickname] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const stored = sessionStorage.getItem('nickname');
-    if (stored) setNickname(stored);
-    setLoading(false);
-  }, []);
+export const SessionProvider = ({ children }) => {
+  const { joinRoom, leaveRoom } = useSocket();
+  const [nickname, setNickname] = useState(sessionStorage.getItem("nickname") || null);
 
   const login = async (name) => {
-    setLoginLoading(true);
-    setError('');
-    try {
-      const res = await connectSocket(name);
-      if (!res.ok) {
-        setError(res.error);
-        return { ok: false, error: res.error };
-      }
-      sessionStorage.setItem('nickname', name);
+    const res = await joinRoom(name);
+    if (res.ok) {
+      sessionStorage.setItem("nickname", name);
       setNickname(name);
-      return { ok: true };
-    } catch (err) {
-      const msg = err.message || 'Unexpected error';
-      setError(msg);
-      return { ok: false, error: msg };
-    } finally {
-      setLoginLoading(false);
     }
+    return res;
   };
 
-  const logout = () => {
-    disconnectSocket();
-    sessionStorage.removeItem('nickname');
+  const logout = async () => {
+    if (nickname) {
+      await leaveRoom();
+    }
+    sessionStorage.removeItem("nickname");
     setNickname(null);
-    setError('');
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      logout();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [logout]);
 
   return (
-    <SessionContext.Provider
-      value={{
-        nickname,
-        login,
-        loginLoading,
-        logout,
-        loading,
-      }}
-    >
+    <SessionContext.Provider value={{ nickname, login, logout }}>
       {children}
     </SessionContext.Provider>
   );
-}
+};

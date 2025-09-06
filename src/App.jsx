@@ -1,17 +1,17 @@
 import { SessionProvider } from '@/contexts/SessionContext';
-import { UsersProvider } from '@/contexts/UsersContext';
+import { SocketProvider } from '@/contexts/SocketContext';
 import { HashRouter } from 'react-router-dom';
 import AppRoutes from '@/routes/AppRoutes';
 
 function App() {
   return (
-  	<UsersProvider>
-	    <SessionProvider>
-	    	<HashRouter>
-	      	<AppRoutes />
-	    	</HashRouter>
-	    </SessionProvider>
-    </UsersProvider>
+		<SocketProvider>
+		  <SessionProvider>
+		    <HashRouter>
+		      <AppRoutes />
+		    </HashRouter>
+		  </SessionProvider>
+		</SocketProvider>
   );
 }
 
