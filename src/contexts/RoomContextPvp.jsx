@@ -27,7 +27,10 @@ export function RoomProviderPVP({ children }) {
     return null;
   };
 
-  const forceLobby = () => socket?.emit('pvp:forceLobby');
+  const forceLobby = () => {
+    socket?.emit('pvp:forceLobby');
+    setPrivateMessages([]);
+  };
 
   // pvp:start listener
   useEffect(() => {
@@ -43,6 +46,7 @@ export function RoomProviderPVP({ children }) {
         X: mySymbol === 'X' ? 'player' : 'opponent',
         O: mySymbol === 'O' ? 'player' : 'opponent',
       });
+      setPrivateMessages([]);
     };
 
     socket.on('pvp:start', onStart);
@@ -59,11 +63,10 @@ export function RoomProviderPVP({ children }) {
     socket.on('pvp:message', onMessage);
     return () => socket.off('pvp:message', onMessage);
   }, [socket]);
-
+  
   const sendPrivateMessage = (text) => {
     if (!socket || !opponentNickname) return;
     socket.emit('pvp:message', { to: opponentNickname, text });
-    setPrivateMessages(prev => [...prev, { from: nickname, text }]);
   };
 
   // moves

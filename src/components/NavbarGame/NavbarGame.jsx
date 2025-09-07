@@ -44,7 +44,7 @@ const NavbarGame = ({ onMount }) => {
         <button 
           className={templateStyles.buttons} 
           onClick={() => {
-            notifyLeave();
+            notifyLeave(true);
             navigate('/lobby');
           }}
         >

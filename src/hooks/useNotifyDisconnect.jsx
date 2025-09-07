@@ -1,31 +1,31 @@
 import { useRoomPVP } from '@/contexts/RoomContextPvp';
+import { useSession } from '@/contexts/SessionContext';
 import { useSocket } from '@/contexts/SocketContext';
 import { useSearchParams } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export const useNotifyDisconnect = () => {
+  const { nickname } = useSession();
   const { socket } = useSocket();
-  const roomPVP = useRoomPVP();
-  const mySymbolRef = useRef(roomPVP?.mySymbol);
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode") || "pvp";
 
-  useEffect(() => {
-    mySymbolRef.current = roomPVP?.mySymbol;
-  }, [roomPVP?.mySymbol]);
-
-  const notifyLeave = () => {
-    if (mode !== 'pvp' || !socket || !mySymbolRef.current) return;
-    socket.emit('pvp:leaveRoom', { symbol: mySymbolRef.current });
+  const notifyLeave = (voluntary = false) => {
+    if (mode !== 'pvp' || !socket || !nickname) return;
+    socket.emit('pvp:leaveRoom', { nickname, voluntary });
   };
 
   useEffect(() => {
-    window.addEventListener('beforeunload', notifyLeave);
-    return () => {
-      notifyLeave();
-      window.removeEventListener('beforeunload', notifyLeave);
+    const handleBeforeUnload = (e) => {
+      if (!socket || !nickname) return;
+      socket.emit('pvp:leaveRoom', { nickname, voluntary: false });
     };
-  }, [socket, mode]);
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [socket, nickname]);
 
   return notifyLeave;
 };
