@@ -1,12 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useCpuTicTacToe, getCpuMove } from "@/hooks/useCpuTicTacToe";
-import { usePvpTicTacToe } from "@/hooks/usePvpTicTacToe";
 import { useCheckWinner } from "@/hooks/useCheckWinner";
 
-const RoomContext = createContext({});
-export const useRoom = () => useContext(RoomContext);
+const RoomContextCPU = createContext({});
+export const useRoomCPU = () => useContext(RoomContextCPU);
 
-export function RoomProvider({ children, mode }) {
+export function RoomProviderCPU({ children }) {
   const { checkWinner } = useCheckWinner();
 
   // Main states
@@ -18,22 +17,17 @@ export function RoomProvider({ children, mode }) {
   // Random PlayerMarks that last the entire session
   const [playerMarks] = useState(() => {
     const assign = Math.random() < 0.5;
-    if (mode === "cpu") {
-      return assign ? { X: "player", O: "cpu" } : { X: "cpu", O: "player" };
-    } else {
-      return assign ? { X: "player1", O: "player2" } : { X: "player2", O: "player1" };
-    }
+    return assign ? { X: "player", O: "cpu" } : { X: "cpu", O: "player" };
   });
 
+  const mySymbol = Object.entries(playerMarks).find(([key, val]) => val === "player")[0];
+
   // Game logic
-  const logic =
-    mode === "cpu"
-      ? useCpuTicTacToe({ board, setBoard, turn, setTurn, setWinner, checkWinner, playerMarks })
-      : usePvpTicTacToe({ board, setBoard, turn, setTurn, setWinner, checkWinner });
+  const logic = useCpuTicTacToe({ board, setBoard, turn, setTurn, setWinner, checkWinner, playerMarks })
 
   // CPU move effect with safe closure
   useEffect(() => {
-    if (mode !== "cpu" || winner || playerMarks[turn] !== "cpu") return;
+    if (winner || playerMarks[turn] !== "cpu") return;
 
     const timeout = setTimeout(() => {
       setBoard(prevBoard => {
@@ -43,7 +37,6 @@ export function RoomProvider({ children, mode }) {
         const newBoard = [...prevBoard];
         newBoard[move] = turn;
 
-        // Check winner with the new board
         const { winner: cpuResult } = checkWinner(newBoard);
         if (cpuResult) setWinner(cpuResult);
         else setTurn(prevTurn => (prevTurn === "X" ? "O" : "X"));
@@ -53,23 +46,20 @@ export function RoomProvider({ children, mode }) {
     }, 400);
 
     return () => clearTimeout(timeout);
-  }, [turn, board, winner, playerMarks, mode, checkWinner]);
+  }, [turn, winner, board, playerMarks, checkWinner]);
 
   // Updating scores
   useEffect(() => {
     if (!winner || winner === "draw") return;
 
-    const meMark = mode === "cpu" ? Object.entries(playerMarks).find(([_, v]) => v === "player")[0] : "X";
-    const opponentMark = mode === "cpu" ? Object.entries(playerMarks).find(([_, v]) => v === "cpu")[0] : "O";
+    const meMark = Object.entries(playerMarks).find(([_, v]) => v === "player")[0]; // user
+    const opponentMark = Object.entries(playerMarks).find(([_, v]) => v === "cpu")[0]; // CPU
 
-    setScores(prev => {
-      const newScores = {
-        me: prev.me + (winner === meMark ? 1 : 0),
-        opponent: prev.opponent + (winner === opponentMark ? 1 : 0)
-      };
-      return newScores;
-    });
-  }, [winner, mode, playerMarks]);
+    setScores(prev => ({
+      me: prev.me + (winner === meMark ? 1 : 0),
+      opponent: prev.opponent + (winner === opponentMark ? 1 : 0)
+    }));
+  }, [winner, playerMarks]);
 
   const handleMove = (index) => {
     if (!winner && playerMarks[turn]?.includes("player") && logic?.handleMove) {
@@ -91,20 +81,9 @@ export function RoomProvider({ children, mode }) {
   };
 
   return (
-    <RoomContext.Provider
-      value={{
-        board,
-        turn,
-        winner,
-        playerMarks,
-        checkWinner,
-        handleMove,
-        handleRestart,
-        scores,
-        mode
-      }}
-    >
+    <RoomContextCPU.Provider
+      value={{ board, turn, winner, playerMarks, checkWinner, handleMove, mySymbol, handleRestart, scores }}>
       {children}
-    </RoomContext.Provider>
+    </RoomContextCPU.Provider>
   );
 }

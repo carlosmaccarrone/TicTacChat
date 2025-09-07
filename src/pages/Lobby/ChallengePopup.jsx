@@ -1,12 +1,27 @@
 import styles from '@/pages/Lobby/ChallengePopup.module.css';
+import { useSession } from '@/contexts/SessionContext';
 
-const ChallengePopup = ({ from, onAccept, onDecline, countdown }) => {
+const ChallengePopup = ({ from, to, onAccept, onCancel, onDecline, countdown }) => {
+  const { nickname } = useSession();
+
+  const amIChallenger = nickname === from;
+  const amIChallenged = nickname === to;
+
   return (
     <div className={styles.challengePopup}>
-      <p>{from} challenged you!</p>
+      {amIChallenger && <p>You challenged {to}!</p>}
+      {amIChallenged && <p>{from} challenged you!</p>}
+      
       <p>Starting in: {countdown}s</p>
-      <button onClick={onAccept}>Accept</button>
-      <button onClick={onDecline}>Decline</button>
+
+			{amIChallenger && <button onClick={onCancel}>Cancel Challenge</button>}
+
+			{amIChallenged && (
+			  <>
+			    <button onClick={onAccept}>Accept</button>
+			    <button onClick={onDecline}>Decline</button>
+			  </>
+			)}
     </div>
   );
 };

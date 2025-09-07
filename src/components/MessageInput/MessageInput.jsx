@@ -1,19 +1,17 @@
-import TextInputWithSend from "@/components/MessageInput/TextInputWithSend";
-import styles from "@/components/MessageInput/MessageInput.module.css";
-import EmojiPicker from "@/components/MessageInput/EmojiPicker";
-import { useState, useRef, useEffect, forwardRef } from "react";
-import { useUsers } from '@/contexts/UsersContext';
+import TextInputWithSend from '@/components/MessageInput/TextInputWithSend';
+import styles from '@/components/MessageInput/MessageInput.module.css';
+import EmojiPicker from '@/components/MessageInput/EmojiPicker';
+import { useState, useRef, useEffect, forwardRef } from 'react';
 
 const MessageInput = forwardRef(({ onSend }, ref) => {
   const [message, setMessage] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
-  const { sendMessage } = useUsers();
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
   const handleSend = () => {
     if (message.trim() === "") return;
-    sendMessage(message);
+    onSend(message);
     setMessage("");
     setShowEmojis(false);
   };

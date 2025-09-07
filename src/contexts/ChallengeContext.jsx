@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useSession } from '@/contexts/SessionContext';
 import { useSocket } from '@/contexts/SocketContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,26 +8,26 @@ export const useChallenge = () => useContext(ChallengeContext);
 
 export const ChallengeProvider = ({ children }) => {
   const [challenge, setChallenge] = useState(null);
-  const { socket, connected } = useSocket();  
+  const { nickname } = useSession();
+  const { socket } = useSocket();  
   const navigate = useNavigate();
-  const nickname = "pepito";
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !nickname) return;
 
-    const onReceived = ({ from }) => {
-      console.log('Challenge received from:', from);
-      setChallenge({ type: 'received', from, to: nickname, countdown: 10 });
+    const onReceived = ({ from, to }) => {
+      setChallenge({ type: 'received', from, to, countdown: 10 });
     };
 
     const onResult = ({ accepted, from }) => {
       setChallenge(prev => {
-        if (prev?.type === 'sent' && prev.to === from) {
-          if (accepted) navigate('/gameplay?mode=pvp');
-          return null;
-        }
+        if (prev?.type === 'sent' && prev.to === from) return null;
         return prev;
       });
+
+      if (accepted) {
+        navigate('/gameplay?mode=pvp');
+      }
     };
 
     socket.on('challenge:received', onReceived);
@@ -38,10 +39,36 @@ export const ChallengeProvider = ({ children }) => {
     };
   }, [socket, nickname, navigate]);
 
-  // Countdown para challenge activo
+  useEffect(() => {
+    if (!socket) return;
+
+    const onPvpStart = () => {
+      navigate('/gameplay?mode=pvp');
+    };
+
+    socket.on('pvp:start', onPvpStart);
+    return () => socket.off('pvp:start', onPvpStart);
+  }, [socket, navigate]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const onCancelled = ({ from }) => {
+      if (challenge && (challenge.from === from || challenge.to === from)) {
+        setChallenge(null);
+      }
+    };
+
+    socket.on('challenge:cancelled', onCancelled);
+
+    return () => {
+      socket.off('challenge:cancelled', onCancelled);
+    };
+  }, [socket, challenge]);
+
+  // Countdown for active challenge
   useEffect(() => {
     if (!challenge) return;
-
     if (challenge.countdown <= 0) {
       setChallenge(null);
       return;
@@ -54,16 +81,12 @@ export const ChallengeProvider = ({ children }) => {
     return () => clearInterval(timer);
   }, [challenge]);
 
-  // Funciones para iniciar, aceptar o declinar challenge
+  // Functions to start, accept or decline challenge
   const startChallenge = (toNickname) => {
-    console.log('⚔️ Sending challenge to:', toNickname); // log
     if (!socket) return;
     socket.emit('challenge:send', { toNickname }, (res) => {
-      console.log('Challenge send response:', res); // log
       if (res.ok) {
         setChallenge({ type: 'sent', from: nickname, to: toNickname, countdown: 10 });
-      } else {
-        alert(res.error);
       }
     });
   };
@@ -71,22 +94,29 @@ export const ChallengeProvider = ({ children }) => {
   const acceptChallenge = () => {
     if (!socket || !challenge) return;
     socket.emit('challenge:response', { fromNickname: challenge.from, accepted: true });
+    navigate('/gameplay?mode=pvp');
     setChallenge(null);
+  };
+
+  const respondChallenge = (targetNickname) => {
+    if (!socket || !challenge) return;
+    socket.emit('challenge:response', { fromNickname: targetNickname, accepted: false });
+    setChallenge(null);
+  };
+
+  const cancelChallenge = () => {
+    if (nickname !== challenge?.from) return;
+    respondChallenge(challenge.from);
   };
 
   const declineChallenge = () => {
-    if (!socket || !challenge) return;
-    socket.emit('challenge:response', { fromNickname: challenge.from, accepted: false });
-    setChallenge(null);
+    if (nickname !== challenge?.to) return;
+    respondChallenge(challenge.from);
   };
 
   return (
-    <ChallengeContext.Provider value={{
-      challenge,
-      startChallenge,
-      acceptChallenge,
-      declineChallenge
-    }}>
+    <ChallengeContext.Provider 
+      value={{ challenge, startChallenge, acceptChallenge, cancelChallenge, declineChallenge }}>
       {children}
     </ChallengeContext.Provider>
   );

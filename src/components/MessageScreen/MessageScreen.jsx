@@ -1,12 +1,10 @@
 import styles from '@/components/MessageScreen/MessageScreen.module.css';
 import { useSession } from '@/contexts/SessionContext';
-import { useUsers } from '@/contexts/UsersContext';
 import { useEffect, useRef } from 'react';
 
-export default function MessageScreen() {
+export default function MessageScreen({ messages }) {
   const { nickname } = useSession();
   const containerRef = useRef(null);
-  const { messages } = useUsers();
 
   useEffect(() => {
     if (containerRef.current) {

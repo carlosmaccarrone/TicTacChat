@@ -1,38 +1,39 @@
 import { ChallengeProvider } from "@/contexts/ChallengeContext";
 import NavbarLobby from '@/components/NavbarLobby/NavbarLobby';
 import NavbarGame from '@/components/NavbarGame/NavbarGame';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { RoomProviderCPU } from "@/contexts/RoomContextCpu";
+import { RoomProviderPVP } from "@/contexts/RoomContextPvp";
 import { UsersProvider } from '@/contexts/UsersContext';
-import { RoomProvider } from "@/contexts/RoomContext";
+import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 
 const PrivateLayout = ({ navbarType }) => {
   const [navbarHeight, setNavbarHeight] = useState(0);
-  const [searchParams] = useSearchParams();
-  const mode = searchParams.get("mode") || "pvp";
 
   const handleNavbarMount = (height) => setNavbarHeight(height);
 
-  if (navbarType === 'lobby') {
-    return (
-      <>
-        <UsersProvider>
-          <ChallengeProvider>
-            <NavbarLobby onMount={handleNavbarMount} />
-            <div style={{ paddingTop: `${navbarHeight}px`, height: `calc(100vh - ${navbarHeight}px)` }}>
-              <Outlet />
-            </div>
-          </ChallengeProvider>
-        </UsersProvider>
-      </>
-    );
-  }
-
   return (
-    <RoomProvider mode={mode}>
-      <NavbarGame onMount={handleNavbarMount} />
-      <Outlet context={{ navbarHeight }} />
-    </RoomProvider>
+    <UsersProvider>
+      <ChallengeProvider>
+        <RoomProviderCPU>
+          <RoomProviderPVP>
+            {navbarType === 'lobby' ? (
+              <>
+                <NavbarLobby onMount={handleNavbarMount} />
+                <div style={{ paddingTop: `${navbarHeight}px`, height: `calc(100vh - ${navbarHeight}px)` }}>
+                  <Outlet />
+                </div>
+              </>
+            ) : (
+              <>
+                <NavbarGame onMount={handleNavbarMount} />
+                <Outlet context={{ navbarHeight }} />
+              </>
+            )}
+          </RoomProviderPVP>
+        </RoomProviderCPU>
+      </ChallengeProvider>
+    </UsersProvider>
   );
 };
 
