@@ -40,7 +40,6 @@ export default function LobbyPage() {
             onAccept={acceptChallenge}
             onCancel={cancelChallenge}
             onDecline={declineChallenge}
-            countdown={challenge.countdown}
           />
         </>
       )}
