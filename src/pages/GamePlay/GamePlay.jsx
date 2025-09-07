@@ -4,8 +4,8 @@ import { useSearchParams, useOutletContext } from 'react-router-dom';
 import MessageScreen from '@/components/MessageScreen/MessageScreen';
 import MessageInput from '@/components/MessageInput/MessageInput';
 import styles from '@/pages/GamePlay/GamePlay.module.css';
-import { useRoomCPU } from "@/contexts/RoomContextCpu";
-import { useRoomPVP } from "@/contexts/RoomContextPvp";
+import { useRoomCPU } from '@/contexts/RoomContextCpu';
+import { useRoomPVP } from '@/contexts/RoomContextPvp';
 import Board from '@/pages/GamePlay/Board';
 
 export default function GamePlayPage() {

@@ -1,8 +1,8 @@
-import { ChallengeProvider } from "@/contexts/ChallengeContext";
+import { ChallengeProvider } from '@/contexts/ChallengeContext';
 import NavbarLobby from '@/components/NavbarLobby/NavbarLobby';
 import NavbarGame from '@/components/NavbarGame/NavbarGame';
-import { RoomProviderCPU } from "@/contexts/RoomContextCpu";
-import { RoomProviderPVP } from "@/contexts/RoomContextPvp";
+import { RoomProviderCPU } from '@/contexts/RoomContextCpu';
+import { RoomProviderPVP } from '@/contexts/RoomContextPvp';
 import { UsersProvider } from '@/contexts/UsersContext';
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';

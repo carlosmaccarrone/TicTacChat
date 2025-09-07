@@ -26,10 +26,15 @@ export function RoomProviderPVP({ children }) {
     if (typeof w === 'object') return w.winner || null;
     return null;
   };
+  
+  const resetScores = () => {
+    setScores({ me: 0, opponent: 0 });
+  };
 
   const forceLobby = () => {
     socket?.emit('pvp:forceLobby');
     setPrivateMessages([]);
+    resetScores();
   };
 
   // pvp:start listener
@@ -47,6 +52,7 @@ export function RoomProviderPVP({ children }) {
         O: mySymbol === 'O' ? 'player' : 'opponent',
       });
       setPrivateMessages([]);
+      resetScores();
     };
 
     socket.on('pvp:start', onStart);
