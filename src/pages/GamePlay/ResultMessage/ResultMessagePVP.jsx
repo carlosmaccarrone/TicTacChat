@@ -23,7 +23,7 @@ const ResultMessagePVP = ({ winner, board, turn, playerMarks, mySymbol, handleRe
   return (
     <div className={styles.resultMessage}>
       {isBoardEmpty && (
-        playerMarks[turn] === 'player' ? 'You start' : 'Hold'
+        playerMarks[turn] === 'player' ? 'Start' : 'Hold'
       )}
 
       {winner && (

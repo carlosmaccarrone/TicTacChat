@@ -6,7 +6,7 @@ const ResultMessageCPU = ({ winner, board, turn, playerMarks, handleRestart }) =
   return (
     <div className={styles.resultMessage}>
       {!winner && isBoardEmpty && (
-        playerMarks[turn]?.includes("player") ? "You start" : "Hold"
+        playerMarks[turn]?.includes("player") ? "Start" : "Hold"
       )}
 
       {winner && (

@@ -15,7 +15,6 @@ export default {
     path: path.resolve(process.cwd(), 'dist'),
     filename: 'bundle.js',
     publicPath: isDev ? '/' : isGhPages ? '/TicTacChat/' : './',
-/*    publicPath: '/',*/
     clean: true,
   },
   devtool: isDev ? 'source-map' : false,
