@@ -1,4 +1,4 @@
-[![CI](https://github.com/carlosmaccarrone/TicTacChat/actions/workflows/ci.yml/badge.svg)](https://github.com/carlosmaccarrone/TicTacChat/actions/workflows/ci.yml)
+[![CI](https://github.com/carlosmaccarrone/TicTacChat/actions/workflows/ci.yml/badge.svg)](https://github.com/carlosmaccarrone/TicTacChat/actions/workflows/ci.yml) 🎬 [Live Demo](https://carlosmaccarrone.github.io/TicTacChat/) – Check out the app running in your browser!
 
 # TicTacChat Front
 
