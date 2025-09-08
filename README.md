@@ -1,3 +1,5 @@
+[![CI](https://github.com/carlosmaccarrone/TicTacChat/actions/workflows/ci.yml/badge.svg)](https://github.com/carlosmaccarrone/TicTacChat/actions/workflows/ci.yml)
+
 # TicTacChat Front
 
 TicTacChat is a demo frontend application that showcases event-driven programming in a multiplayer context. It allows users to chat and play Tic-Tac-Toe (Noughts and Crosses) against either the CPU or other users in private game rooms.
