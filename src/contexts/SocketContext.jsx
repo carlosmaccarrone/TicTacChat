@@ -12,7 +12,8 @@ export const SocketProvider = ({ children }) => {
 
   const initSocket = () => {
     if (!globalSocket || !globalSocket.connected) {
-      globalSocket = io("http://localhost:3001", { transports: ["websocket"] });
+      /*globalSocket = io("http://localhost:3001", { transports: ["websocket"] });*/
+      globalSocket = io("https://tictacchatbackend-production.up.railway.app", { transports: ["websocket"] });
 
       globalSocket.on("connect", () => {
         setConnected(true);
