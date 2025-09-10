@@ -53,7 +53,7 @@
   .messageInput {
     bottom: 0;
     left: 0;
-    z-index: 30;
+    z-index: 10;
     box-sizing: border-box;
   }
 }
