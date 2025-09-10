@@ -46,14 +46,15 @@
 
   .userList {
     position: fixed;
-	  height: calc(100% - (var(--input-height) * 2));
+	  height: calc(99.5% - (var(--input-height) * 2));
     z-index: 20;
   }
 
   .messageInput {
+    position: absolute;
     bottom: 0;
     left: 0;
-    z-index: 10;
+    z-index: 30;
     box-sizing: border-box;
   }
 }
