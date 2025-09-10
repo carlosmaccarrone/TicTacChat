@@ -50,11 +50,12 @@
 
 .buttons {
   font-family: "Comic Neue", cursive, sans-serif;
+  font-weight: 700;
   background: none;
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 22px;
   transition: transform 0.2s ease;
   -webkit-text-stroke: 0.4px #232C46;
   text-stroke: 0.4px #232C46;

@@ -11,6 +11,7 @@
   direction: rtl;
   position: relative;
   border-bottom-right-radius: 6px;
+  z-index: 10;
 }
 
 .container > * { direction: ltr; }
