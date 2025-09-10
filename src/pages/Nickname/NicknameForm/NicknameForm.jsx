@@ -38,8 +38,8 @@ const NicknameForm = () => {
   const handleSubmit = async (evt) => {
     evt.preventDefault();
 
-    if (nicknameInput.length < 6) {
-      setLocalError('Nickname must be at least 6 characters');
+    if (nicknameInput.length < 3) {
+      setLocalError('Nickname must be at least 3 characters');
       return;
     }
 
