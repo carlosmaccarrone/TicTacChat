@@ -51,7 +51,7 @@
   }
 
   .messageScreen {
-    padding-bottom: calc(var(--input-height));
+    padding-bottom: calc(var(--input-height) + 4px);
   }
 
   .messageInput {
